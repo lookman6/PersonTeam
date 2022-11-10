@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PersonneDAO extends SQLiteOpenHelper {
 
     public PersonneDAO(@Nullable Context context) {
@@ -61,6 +64,55 @@ public class PersonneDAO extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery("Select * From Personne",null);
         return c;
+    }
+
+    public ArrayList<Personne> getAllPersonne2(){
+        ArrayList<Personne> liste = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery("Select * From Personne",null);
+        c.moveToFirst();
+        while(c.isAfterLast() == false)
+        {
+            Personne p = new Personne();
+            p.setId(c.getInt(0));
+            p.setNom(c.getString(1));
+            p.setPrenom(c.getString(2));
+            p.setAge(c.getInt(3));
+            db.close();
+            liste.add(p);
+        }
+        return liste;
+
+    }
+
+    public Cursor getSearch(String res)
+    {
+        ArrayList<String> liste = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery("Select * From Personne where nom like '%"+res+"%' or prenom like '%"+res+"%'",null);
+
+        return c;
+    }
+
+
+    public ArrayList<Personne> getSearch2(String res)
+    {
+        ArrayList<Personne> liste = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery("Select * From Personne where nom like '%"+res+"%' or prenom like '%"+res+"%'",null);
+        c.moveToFirst();
+        while(c.isAfterLast() == false)
+        {
+            Personne p = new Personne();
+            p.setId(c.getInt(0));
+            p.setNom(c.getString(1));
+            p.setPrenom(c.getString(2));
+            p.setAge(c.getInt(3));
+
+            liste.add(p);
+            c.moveToNext();
+         }
+        return liste;
     }
 
     public Personne getOnePersonne(int id){
